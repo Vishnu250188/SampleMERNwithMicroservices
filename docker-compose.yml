@@ -1,0 +1,35 @@
+services:
+
+  hello-service:
+    build:
+      context: ./backend/helloService
+    image: hello-service:v1
+    container_name: hello-service
+    env_file:
+      - ./backend/helloService/.env
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+
+  profile-service:
+    build:
+      context: ./backend/profileService
+    image: profile-service:v1
+    container_name: profile-service
+    env_file:
+      - ./backend/profileService/.env
+    ports:
+      - "3002:3002"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    image: mern-frontend:v1
+    container_name: mern-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - hello-service
+      - profile-service
+    restart: unless-stopped
